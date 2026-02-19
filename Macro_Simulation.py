@@ -9,9 +9,11 @@ st.sidebar.header("Global Economic Parameters")
 
 st.sidebar.subheader("Demand Side (IS Curve)")
 r_star = st.sidebar.slider("Natural Real Interest Rate (r*)", 0.0, 5.0, 2.0)
+sigma_x = st.sidebar.slider("IS Curve Shock Volatility (Std Dev)", 0.0, 3.0, 1.0)
 
 st.sidebar.subheader("Supply Side (Phillips Curve)")
 b_param = st.sidebar.slider("Output Gap Sensitivity (b)", 0.05, 1.0, 0.25)
+sigma_u = st.sidebar.slider("Phillips Curve Shock Volatility (Std Dev)", 0.0, 3.0, 1.0)
 
 st.sidebar.subheader("Central Bank Preferences")
 pi_bar = st.sidebar.slider("Inflation Target (pi_bar)", 0.0, 5.0, 2.5)
@@ -43,8 +45,8 @@ with col_in2:
 if st.button("Run Simulation and Calculate Results"):
     
     # Random shocks (generated only when button is clicked)
-    x = np.random.normal(0, 1)
-    u = np.random.normal(0, 1)
+    x = np.random.normal(0, sigma_x)
+    u = np.random.normal(0, sigma_u)
     
     # Calculations
     output_gap_L = -(r_L - r_star) + x
@@ -78,3 +80,4 @@ if st.button("Run Simulation and Calculate Results"):
         st.subheader(f"Utility (Central Bank): {utility_CB_R:.2f}")
 else:
     st.info("Waiting for Central Bank interest rates. Click the button above to see results.")
+
