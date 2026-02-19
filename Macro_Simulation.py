@@ -4,6 +4,18 @@ import numpy as np
 
 st.title("Macroeconomics Simulation")
 
+st.sidebar.header("Global Economic Parameters")
+
+st.sidebar.subheader("Demand Side (IS Curve)")
+r_star = st.sidebar.slider("Natural Real Interest Rate (r*)", 0.0, 5.0, 2.0)
+
+st.sidebar.subheader("Supply Side (Phillips Curve)")
+b_param = st.sidebar.slider("Output Gap Sensitivity (b)", 0.05, 1.0, 0.25)
+
+st.sidebar.subheader("Central Bank Preferences")
+pi_bar = st.sidebar.slider("Inflation Target (pi_bar)", 0.0, 5.0, 2.5)
+kappa = st.sidebar.slider("Output Gap Weight (kappa)", 0.0, 1.0, 0.1)
+
 # 1. Pull data from Google Sheets
 sheet_url_L = "https://docs.google.com/spreadsheets/d/1bpNT6HZsvexo5s8WDxVqgw0x7IymI8s-soCx4liuCS0/export?format=csv&gid=1717631077"
 sheet_url_R = "https://docs.google.com/spreadsheets/d/1bpNT6HZsvexo5s8WDxVqgw0x7IymI8s-soCx4liuCS0/export?format=csv&gid=709519525"
@@ -63,4 +75,5 @@ if st.button("Run Simulation and Calculate Results"):
         st.subheader(f"Utility (Private): {utility_private_R:.2f}")
         st.subheader(f"Utility (Central Bank): {utility_CB_R:.2f}")
 else:
+
     st.info("Waiting for Central Bank interest rates. Click the button above to see results.")
