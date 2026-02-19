@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 
+st.set_page_config(layout="wide")
 st.title("Macroeconomics Simulation")
 
 st.sidebar.header("Global Economic Parameters")
@@ -30,12 +31,13 @@ st.subheader(f"Average Expected Inflation of Group L: {avg_expected_inflation_L:
 st.subheader(f"Average Expected Inflation of Group R: {avg_expected_inflation_R:.2f}%")
 
 # 2. Input Section with Subheader Styling
-# We use st.subheader for the label and an empty string in number_input to match fonts
-st.subheader("Central Bank L: Set the Real Interest Rate (in %)")
-r_L = st.number_input(label="CB_L_Input", label_visibility="collapsed", value=2.0)
-
-st.subheader("Central Bank R: Set the Real Interest Rate (in %)")
-r_R = st.number_input(label="CB_R_Input", label_visibility="collapsed", value=2.0)
+col_in1, col_in2 = st.columns(2)
+with col_in1:
+    st.subheader("Central Bank L Rate (%)")
+    r_L = st.number_input("CB_L_Input", label_visibility="collapsed", value=2.0, key="L")
+with col_in2:
+    st.subheader("Central Bank R Rate (%)")
+    r_R = st.number_input("CB_R_Input", label_visibility="collapsed", value=2.0, key="R")
 
 # 3. The "Gate" - Only show results when this button is clicked
 if st.button("Run Simulation and Calculate Results"):
@@ -45,16 +47,16 @@ if st.button("Run Simulation and Calculate Results"):
     u = np.random.normal(0, 1)
     
     # Calculations
-    output_gap_L = -(r_L - 2) + x
-    pi_L = avg_expected_inflation_L + 0.25 * output_gap_L + u
+    output_gap_L = -(r_L - r_star) + x
+    pi_L = avg_expected_inflation_L + b_param * output_gap_L + u
     
-    output_gap_R = -(r_R - 2) + x
-    pi_R = avg_expected_inflation_R + 0.25 * output_gap_R + u
+    output_gap_R = -(r_R - r_star) + x
+    pi_R = avg_expected_inflation_R + b_param * output_gap_R + u
 
     utility_private_L = 10 - (pi_L - avg_expected_inflation_L)**2
     utility_private_R = 10 - (pi_R - avg_expected_inflation_R)**2
-    utility_CB_L = 20 - (pi_L - 2.5)**2
-    utility_CB_R = 20 - (pi_R - 2.5)**2 - 0.1 * output_gap_R**2
+    utility_CB_L = 20 - (pi_L - pi_bar)**2
+    utility_CB_R = 20 - (pi_R - pi_bar)**2 - kappa * output_gap_R**2
 
     # 4. Output Display
     st.divider() # Visual line to separate inputs from results
@@ -75,5 +77,4 @@ if st.button("Run Simulation and Calculate Results"):
         st.subheader(f"Utility (Private): {utility_private_R:.2f}")
         st.subheader(f"Utility (Central Bank): {utility_CB_R:.2f}")
 else:
-
     st.info("Waiting for Central Bank interest rates. Click the button above to see results.")
